@@ -30,12 +30,13 @@ While the base units here correspond to the SI base units, nothing here prevents
 
 consider, the [7 Cs](https://www.youtube.com/watch?v=KmfdeWd0RMk) A system of measurement based around
 
-Velocity (the speed of light)
-Energy (calorie)
-Frequency (middle c)
-Temperature (degrees celcius)
-Luminous Intensity (candela)
-Charge (coulomb)
+- Velocity (the speed of light)
+- Energy (calorie)
+- Frequency (middle c)
+- Temperature (degrees celcius)
+- Luminous Intensity (candela)
+- Charge (coulomb)
+- Amount of Substance (100, roman numeral C)
 
 In this system of measurement, derived units still work just fine
 
