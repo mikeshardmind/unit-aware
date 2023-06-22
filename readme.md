@@ -52,6 +52,18 @@ Not all SI recognized derived units are supported.
 - Celcius is not supported by this at this time. This may not change (needs consideration of impact)
 - becquerel, gray, sievert, and katal are all excluded for now, with a potential to add support later
 
+### Arbitray Precision
+
+`UnitAwareValue` and `SIUnitAwareValue` both accept any type which support additon, subtraction, multiplcation, division, and equality comparison for a value.
+
+You can use the builtin `fractions.Fraction` or `decimal.Decimal` if specific precision is required
+
+```py
+>>> from fractions import Fraction
+>>> from unit_aware import Units, SIUnitAwareValue as SIV
+>>> SIV(Fraction("5/4"), Units.length) / SIV(Fraction("3"), Units.time)   
+5/12 m/s
+```
 
 ### Other systems of measurement?
 
