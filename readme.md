@@ -8,8 +8,10 @@
 UnitAwareValue(value=7200, units=UnitsVector(time=0, length=1, mass=0, current=0, temperature=0, luminous_intensity=0, amount_of_substance=0))
 ```
 
-UnitsVector holds info about units of measurement as a 7 dimensional vector
-Units contains shortcuts to these based on what you are measuring.
+`UnitsVector` holds info about units of measurement as a 7 dimensional vector
+
+`Units` contains shortcuts to these based on what you are measuring.
+
 You can use this to check that the units you are using make sense
 
 ```py
