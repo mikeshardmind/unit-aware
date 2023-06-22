@@ -20,6 +20,6 @@ unfixable = [
 
 
 [tool.pyright]
-include = ["rolebot.py"]
+include = ["unit_aware.py"]
 typeCheckingMode = "strict"
 pythonVersion = "3.11"
