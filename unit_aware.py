@@ -248,6 +248,9 @@ class SupportsBasicArithmetic(Protocol):
     def __truediv__(self: Self, other: Self) -> Self:
         ...
 
+    def __eq__(self: Self, other: Self) -> bool:
+        ...
+
 T = TypeVar("T", bound=SupportsBasicArithmetic)
 
 
@@ -292,3 +295,8 @@ class UnitAwareValue(Generic[T]):
             new_units = UnitsVector(*map(operator.sub, self.units, other.units))
             return UnitAwareValue(self.value / other.value, new_units)
         return NotImplemented
+    
+    def __eq__(self: Self, other: object) -> bool:
+        if isinstance(other, type(self)):
+            return self.value == other.value and self.units == other.units
+        return False
