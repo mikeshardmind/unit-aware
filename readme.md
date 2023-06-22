@@ -52,7 +52,7 @@ Not all SI recognized derived units are supported.
 - Celcius is not supported by this at this time. This may not change (needs consideration of impact)
 - becquerel, gray, sievert, and katal are all excluded for now, with a potential to add support later
 
-### Arbitray Precision
+### Arbitrary Precision
 
 `UnitAwareValue` and `SIUnitAwareValue` both accept any type which support additon, subtraction, multiplcation, division, and equality comparison for a value.
 
