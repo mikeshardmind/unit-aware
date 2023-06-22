@@ -387,4 +387,5 @@ class SIUnitAwareValue(UnitAwareValue[T]):
 
     def __repr__(self: Self) -> str:
         si_repr = format_unitsvector_as_si(self.units)
-        return f"{self.value} {si_repr}"
+        # done this way in case of dimensionless values
+        return " ".join(filter(None, (f"{self.value}", si_repr)))
