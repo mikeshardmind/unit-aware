@@ -263,7 +263,10 @@ class UnitAwareValue(Generic[T]):
     def __init__(self: Self, value: T, units: UnitsVector) -> None:
         self.value: T = value
         self.units: UnitsVector = units
-    
+
+    def __repr__(self: Self) -> str:
+        return f"UnitAwareValue(value={self.value!r}, units={self.units!r})"
+
     def __add__(self: Self, other: object) -> UnitAwareValue[T]:
         if isinstance(other, type(self)):
             if self.units == other.units:
