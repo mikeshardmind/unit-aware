@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import operator
+from fractions import Fraction
 from typing import Generic, NamedTuple, Protocol, Self, TypeVar
 
 """
@@ -28,13 +29,13 @@ cd	candela	luminous intensity
 """
 
 class UnitsVector(NamedTuple):
-    time: int = 0
-    length: int = 0
-    mass: int = 0
-    current: int = 0
-    temperature: int = 0
-    luminous_intensity: int = 0
-    amount_of_substance: int = 0
+    time: int | Fraction = 0
+    length: int | Fraction = 0
+    mass: int | Fraction = 0
+    current: int | Fraction = 0
+    temperature: int | Fraction = 0
+    luminous_intensity: int | Fraction = 0
+    amount_of_substance: int | Fraction = 0
 
 class Units:
 
