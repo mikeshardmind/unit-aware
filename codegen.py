@@ -18,6 +18,7 @@ import re
 from pathlib import Path
 
 UNIT_INFO = """
+Scalar Value            0   0   0   0   0   0   0
 Acceleration	        -2	1	0	0	0	0	0
 Amount of Substance	    0	0	0	0	0	0	1
 Angular Momentum	    -1	2	1	0	0	0	0

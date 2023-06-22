@@ -24,6 +24,33 @@ UnitAwareValue prevents addition and subtraction with mismatched units, the belo
 >>> UnitAwareValue(120, Units.area) + UnitAwareValue(120, Units.volume)
 ```
 
+### Already using SI units like you should be?
+
+`SIUnitAwareValue` has a repr which displays the SI units, including basic support for derived units.
+```py
+from unit_aware import Units, SIUnitAwareValue as SIV
+>>> SIV(1, Units.scalar_value) / SIV(1, Units.time) 
+1.0 Hz
+>>> SIV(1, Units.velocity) * SIV(1, Units.time) 
+1 m
+>>> SIV(1, Units.velocity) + SIV(1, Units.acceleration) * SIV(1, Units.time) 
+2 m/s
+>>> SIV(1, Units.power) / SIV(1, Units.current)
+1.0 V
+```
+
+If it can't determine an equivalent derived unit appears to make sense:
+```py
+>>> SIV(1, Units.power) / SIV(1, Units.time) * SIV(1, Units.area) / SIV(1, Units.time)  
+1.0 m⁴kg/s⁵
+```
+
+Not all SI recognized derived units are supported. 
+- Radians, and steradians are dimensionless. You can insert them as appropriate without other modification to what is displayed.
+- Celcius is not supported by this at this time. This may not change (needs consideration of impact)
+- becquerel, gray, sievert, and katal are all excluded for now, with a potential to add support later
+
+
 ### Other systems of measurement?
 
 While the base units here correspond to the SI base units, nothing here prevents using these with any coherent system of measurement
@@ -57,7 +84,6 @@ and the seven cs uses middle C (c4), assuming A4 is 440hz and 12-tone equal temp
 
 ### Todo list
 
-- Formatting based on units.
 - Parsing from string for SI units.
 - Conversion matrices for other coherent systems.
 - Display in terms of equivalent specified units with error on units not being compatible

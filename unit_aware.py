@@ -28,15 +28,20 @@ cd	candela	luminous intensity
 """
 
 class UnitsVector(NamedTuple):
-    time: int
-    length: int
-    mass: int
-    current: int
-    temperature: int
-    luminous_intensity: int
-    amount_of_substance: int
+    time: int = 0
+    length: int = 0
+    mass: int = 0
+    current: int = 0
+    temperature: int = 0
+    luminous_intensity: int = 0
+    amount_of_substance: int = 0
 
 class Units:
+
+    @classmethod
+    @property
+    def scalar_value(cls: type[Self]) -> UnitsVector:
+        return UnitsVector(0, 0, 0, 0, 0, 0, 0)
 
     @classmethod
     @property
@@ -270,33 +275,116 @@ class UnitAwareValue(Generic[T]):
     def __repr__(self: Self) -> str:
         return f"UnitAwareValue(value={self.value!r}, units={self.units!r})"
 
-    def __add__(self: Self, other: object) -> UnitAwareValue[T]:
+    def __add__(self: Self, other: object) -> Self:
         if isinstance(other, type(self)):
             if self.units == other.units:
-                return UnitAwareValue(self.value + other.value, self.units)
+                return type(self)(self.value + other.value, self.units)
             raise UnitMismatch
         return NotImplemented
 
-    def __sub__(self: Self, other: object) -> UnitAwareValue[T]:
+    def __sub__(self: Self, other: object) -> Self:
         if isinstance(other, type(self)):
             if self.units == other.units:
-                return UnitAwareValue(self.value - other.value, self.units)
+                return type(self)(self.value - other.value, self.units)
             raise UnitMismatch
         return NotImplemented
     
-    def __mul__(self: Self, other: object) -> UnitAwareValue[T]:
+    def __mul__(self: Self, other: object) -> Self:
         if isinstance(other, type(self)):
             new_units = UnitsVector(*map(operator.add, self.units, other.units))
-            return UnitAwareValue(self.value * other.value, new_units)
+            return type(self)(self.value * other.value, new_units)
         return NotImplemented
     
-    def __div__(self: Self, other: object) -> UnitAwareValue[T]:
+    def __truediv__(self: Self, other: object) -> Self:
         if isinstance(other, type(self)):
             new_units = UnitsVector(*map(operator.sub, self.units, other.units))
-            return UnitAwareValue(self.value / other.value, new_units)
+            return type(self)(self.value / other.value, new_units)
         return NotImplemented
     
     def __eq__(self: Self, other: object) -> bool:
         if isinstance(other, type(self)):
             return self.value == other.value and self.units == other.units
         return False
+
+
+SI_BASE_UNIT_LOOKUP_DICT: dict[UnitsVector, str] = {
+    Units.time: "s",
+    Units.length: "m",
+    Units.mass: "kg",
+    Units.current: "A",
+    Units.temperature: "K",
+    Units.amount_of_substance: "mol",
+    Units.luminous_intensity: "cd",
+}
+
+SI_NAMED_DERIVED_UNIT_LOOKUP_DICT: dict[UnitsVector, str] = {
+    Units.frequency: "Hz",
+    Units.force: "N",
+    Units.pressure: "Pa",
+    Units.energy: "J",
+    Units.power: "W",
+    Units.charge: "C",
+    Units.voltage: "V",
+    Units.capacitance: "F",
+    Units.resistance: "Ω",
+    Units.conductance: "S",
+    Units.magnetic_flux: "Wb",
+    Units.magnetic_flux_density: "T",
+    Units.inductance: "H",
+    Units.illuminance: "lx",
+}
+
+SUPERSCRIPTS: dict[int, str] = {
+    1: "\u00B9",
+    2: "\u00B2",
+    3: "\u00B3",
+    4: "\u2074",
+    5: "\u2075",
+    6: "\u2076",
+    7: "\u2077",
+    8: "\u2078",
+    9: "\u2079",
+    0: "\u2070",
+}
+
+
+def format_unitsvector_as_si(vec: UnitsVector) -> str:
+    try:
+        return SI_BASE_UNIT_LOOKUP_DICT[vec]
+    except KeyError:
+        try:
+            return SI_NAMED_DERIVED_UNIT_LOOKUP_DICT[vec]
+        except KeyError:
+            pass
+
+    this: list[str] = []
+    per_that: list[str] = []
+
+    for name in (
+        "length", "mass", "time", "current", "temperature", "amount_of_substance", "luminous_intensity",
+    ):
+        val: int = getattr(vec, name, 0)
+        if not val:
+            continue
+        
+        arr = this
+        if val < 0:
+            arr = per_that
+            val = abs(val)
+
+        arr.append(SI_BASE_UNIT_LOOKUP_DICT[getattr(Units, name)])
+        if val > 1:
+            # just in case, but are we really having units like this?
+            while val >= 10:
+                n, val = divmod(val, 10)
+                arr.append(SUPERSCRIPTS[n])
+            arr.append(SUPERSCRIPTS[val])
+
+    return "/".join(filter(None, ("".join(this), "".join(per_that))))
+
+
+class SIUnitAwareValue(UnitAwareValue[T]):
+
+    def __repr__(self: Self) -> str:
+        si_repr = format_unitsvector_as_si(self.units)
+        return f"{self.value} {si_repr}"
