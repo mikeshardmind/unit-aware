@@ -104,4 +104,3 @@ and the seven cs uses middle C (c4), assuming A4 is 440hz and 12-tone equal temp
 - Conversion matrices for other coherent systems.
 - Display in terms of equivalent specified units with error on units not being compatible
 - Possible extended form for units that allows defining in terms of relation to SI for non-coherent units?
-- User provided basis

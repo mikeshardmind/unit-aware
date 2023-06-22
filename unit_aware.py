@@ -262,7 +262,8 @@ class SupportsBasicArithmetic(Protocol):
     def __eq__(self: Self, other: Self) -> bool:
         ...
 
-T = TypeVar("T", bound=SupportsBasicArithmetic)
+V = TypeVar("V", bound=SupportsBasicArithmetic)
+U = TypeVar("U", bound=tuple[int | float | Fraction, ...])
 
 
 class UnitMismatch(Exception):
@@ -270,45 +271,45 @@ class UnitMismatch(Exception):
         super().__init__("Can't add/subtract values with different units")
 
 
-class UnitAwareValue(Generic[T]):
+class UnitAwareValue(Generic[V, U]):
 
     __slots__ = ("value", "units")
 
-    def __init__(self: Self, value: T, units: UnitsVector) -> None:
-        self.value: T = value
-        self.units: UnitsVector = units
+    def __init__(self: Self, value: V, units: U) -> None:
+        self.value: V = value
+        self.units: U = units
 
     def __repr__(self: Self) -> str:
         return f"UnitAwareValue(value={self.value!r}, units={self.units!r})"
 
     def __add__(self: Self, other: object) -> Self:
-        if isinstance(other, type(self)):
+        if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
             if self.units == other.units:
                 return type(self)(self.value + other.value, self.units)
             raise UnitMismatch
         return NotImplemented
 
     def __sub__(self: Self, other: object) -> Self:
-        if isinstance(other, type(self)):
+        if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
             if self.units == other.units:
                 return type(self)(self.value - other.value, self.units)
             raise UnitMismatch
         return NotImplemented
     
     def __mul__(self: Self, other: object) -> Self:
-        if isinstance(other, type(self)):
-            new_units = UnitsVector(*map(operator.add, self.units, other.units))
+        if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
+            new_units = type(self.units)(*map(operator.add, self.units, other.units))
             return type(self)(self.value * other.value, new_units)
         return NotImplemented
     
     def __truediv__(self: Self, other: object) -> Self:
-        if isinstance(other, type(self)):
-            new_units = UnitsVector(*map(operator.sub, self.units, other.units))
+        if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
+            new_units = type(self.units)(*map(operator.sub, self.units, other.units))
             return type(self)(self.value / other.value, new_units)
         return NotImplemented
     
     def __eq__(self: Self, other: object) -> bool:
-        if isinstance(other, type(self)):
+        if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
             return self.value == other.value and self.units == other.units
         return False
 
@@ -390,9 +391,16 @@ def format_unitsvector_as_si(vec: UnitsVector) -> str:
     return "/".join(filter(None, ("".join(this), "".join(per_that))))
 
 
-class SIUnitAwareValue(UnitAwareValue[T]):
+class SIUnitAwareValue(UnitAwareValue[V, U]):
+
+    def __init__(self: Self, value: V, units: U) -> None:
+        if not isinstance(units, UnitsVector):
+            msg = "Use a UnitsVector for this one for now"
+            raise TypeError(msg)
+        super().__init__(value, units)
 
     def __repr__(self: Self) -> str:
+        assert isinstance(self.units, UnitsVector)
         si_repr = format_unitsvector_as_si(self.units)
         # done this way in case of dimensionless values
         return " ".join(filter(None, (f"{self.value}", si_repr)))
