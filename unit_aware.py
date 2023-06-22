@@ -238,6 +238,11 @@ class Units:
     def volume(cls: type[Self]) -> UnitsVector:
         return UnitsVector(0, 3, 0, 0, 0, 0, 0)
 
+    @classmethod
+    @property
+    def catalytic_activity(cls: type[Self]) -> UnitsVector:
+        return UnitsVector(-1, 0, 0, 0, 0, 0, 1)
+
 
 class SupportsBasicArithmetic(Protocol):
     
@@ -332,6 +337,7 @@ SI_NAMED_DERIVED_UNIT_LOOKUP_DICT: dict[UnitsVector, str] = {
     Units.magnetic_flux_density: "T",
     Units.inductance: "H",
     Units.illuminance: "lx",
+    Units.catalytic_activity: "Kat",    
 }
 
 SUPERSCRIPTS: dict[int, str] = {

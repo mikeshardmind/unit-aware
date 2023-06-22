@@ -58,6 +58,7 @@ Time	                1	0	0	0	0	0	0
 Velocity	            -1	1	0	0	0	0	0
 Voltage	                -3	2	1	-1	0	0	0
 Volume	                0	3	0	0	0	0	0
+Catalytic activity      -1   0   0   0   0   0   1
 """
 
 

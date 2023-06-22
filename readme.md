@@ -47,10 +47,12 @@ If it can't determine an equivalent derived unit appears to make sense:
 1.0 m⁴kg/s⁵
 ```
 
-Not all SI recognized derived units are supported. 
+Not all SI recognized derived units are supported for automatic display. 
 - Radians, and steradians are dimensionless. You can insert them as appropriate without other modification to what is displayed.
 - Celcius is not supported by this at this time. This may not change (needs consideration of impact)
-- becquerel, gray, sievert, and katal are all excluded for now, with a potential to add support later
+- gray and sievert are excluded, having the same dimensionality with slightly differing semantic meaning.
+    - May add as sievert, with the expectation that those who need gray know the dimensional equivalence
+- becquerel is excluded for dimensional equivalence to hertz, with hertz being significantly more common
 
 ### Arbitrary Precision
 
