@@ -16,7 +16,9 @@ from __future__ import annotations
 
 import operator
 from fractions import Fraction
-from typing import Generic, NamedTuple, Protocol, Self, TypeVar
+from typing import Any, Generic, NamedTuple, Protocol, Self, TypeVar
+
+__all__ = ["Units", "SIUnitAwareValue", "UnitAwareValue", "UnitsVector"]
 
 """
 s	second	time
@@ -28,6 +30,7 @@ mol	mole	amount of substance
 cd	candela	luminous intensity
 """
 
+
 class UnitsVector(NamedTuple):
     time: int | Fraction = 0
     length: int | Fraction = 0
@@ -37,233 +40,190 @@ class UnitsVector(NamedTuple):
     luminous_intensity: int | Fraction = 0
     amount_of_substance: int | Fraction = 0
 
-class Units:
 
-    @classmethod
+class UnitsMeta(type):
     @property
-    def scalar_value(cls: type[Self]) -> UnitsVector:
+    def scalar_value(cls: Any) -> UnitsVector:
         return UnitsVector(0, 0, 0, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def acceleration(cls: type[Self]) -> UnitsVector:
+    def acceleration(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 1, 0, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def amount_of_substance(cls: type[Self]) -> UnitsVector:
+    def amount_of_substance(cls: Any) -> UnitsVector:
         return UnitsVector(0, 0, 0, 0, 0, 0, 1)
 
-    @classmethod
     @property
-    def angular_momentum(cls: type[Self]) -> UnitsVector:
+    def angular_momentum(cls: Any) -> UnitsVector:
         return UnitsVector(-1, 2, 1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def area(cls: type[Self]) -> UnitsVector:
+    def area(cls: Any) -> UnitsVector:
         return UnitsVector(0, 2, 0, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def capacitance(cls: type[Self]) -> UnitsVector:
+    def capacitance(cls: Any) -> UnitsVector:
         return UnitsVector(4, -2, -1, 2, 0, 0, 0)
 
-    @classmethod
     @property
-    def charge(cls: type[Self]) -> UnitsVector:
+    def charge(cls: Any) -> UnitsVector:
         return UnitsVector(1, 0, 0, 1, 0, 0, 0)
 
-    @classmethod
     @property
-    def conductance(cls: type[Self]) -> UnitsVector:
+    def conductance(cls: Any) -> UnitsVector:
         return UnitsVector(3, -2, -1, 2, 0, 0, 0)
 
-    @classmethod
     @property
-    def conductivity(cls: type[Self]) -> UnitsVector:
+    def conductivity(cls: Any) -> UnitsVector:
         return UnitsVector(3, -3, -1, 2, 0, 0, 0)
 
-    @classmethod
     @property
-    def current(cls: type[Self]) -> UnitsVector:
+    def current(cls: Any) -> UnitsVector:
         return UnitsVector(0, 0, 0, 1, 0, 0, 0)
 
-    @classmethod
     @property
-    def density(cls: type[Self]) -> UnitsVector:
+    def density(cls: Any) -> UnitsVector:
         return UnitsVector(0, -3, 1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def electric_field_strength(cls: type[Self]) -> UnitsVector:
+    def electric_field_strength(cls: Any) -> UnitsVector:
         return UnitsVector(-3, 1, 1, -1, 0, 0, 0)
 
-    @classmethod
     @property
-    def energy(cls: type[Self]) -> UnitsVector:
+    def energy(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 2, 1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def entropy(cls: type[Self]) -> UnitsVector:
+    def entropy(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 2, 1, 0, -1, 0, 0)
 
-    @classmethod
     @property
-    def force(cls: type[Self]) -> UnitsVector:
+    def force(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 1, 1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def frequency(cls: type[Self]) -> UnitsVector:
+    def frequency(cls: Any) -> UnitsVector:
         return UnitsVector(-1, 0, 0, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def gravitation(cls: type[Self]) -> UnitsVector:
+    def gravitation(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 3, -1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def illuminance(cls: type[Self]) -> UnitsVector:
+    def illuminance(cls: Any) -> UnitsVector:
         return UnitsVector(0, -2, 0, 0, 0, 1, 0)
 
-    @classmethod
     @property
-    def inductance(cls: type[Self]) -> UnitsVector:
+    def inductance(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 2, 1, -2, 0, 0, 0)
 
-    @classmethod
     @property
-    def length(cls: type[Self]) -> UnitsVector:
+    def length(cls: Any) -> UnitsVector:
         return UnitsVector(0, 1, 0, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def luminous_intensity(cls: type[Self]) -> UnitsVector:
+    def luminous_intensity(cls: Any) -> UnitsVector:
         return UnitsVector(0, 0, 0, 0, 0, 1, 0)
 
-    @classmethod
     @property
-    def magnetic_flux(cls: type[Self]) -> UnitsVector:
+    def magnetic_flux(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 2, 1, -1, 0, 0, 0)
 
-    @classmethod
     @property
-    def magnetic_flux_density(cls: type[Self]) -> UnitsVector:
+    def magnetic_flux_density(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 0, 1, -1, 0, 0, 0)
 
-    @classmethod
     @property
-    def magnetic_permeability(cls: type[Self]) -> UnitsVector:
+    def magnetic_permeability(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 1, 1, -2, 0, 0, 0)
 
-    @classmethod
     @property
-    def mass(cls: type[Self]) -> UnitsVector:
+    def mass(cls: Any) -> UnitsVector:
         return UnitsVector(0, 0, 1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def molar_mass(cls: type[Self]) -> UnitsVector:
+    def molar_mass(cls: Any) -> UnitsVector:
         return UnitsVector(0, 0, 1, 0, 0, 0, -1)
 
-    @classmethod
     @property
-    def molar_volume(cls: type[Self]) -> UnitsVector:
+    def molar_volume(cls: Any) -> UnitsVector:
         return UnitsVector(0, 3, 0, 0, 0, 0, -1)
 
-    @classmethod
     @property
-    def momentum(cls: type[Self]) -> UnitsVector:
+    def momentum(cls: Any) -> UnitsVector:
         return UnitsVector(-1, 1, 1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def permittivity(cls: type[Self]) -> UnitsVector:
+    def permittivity(cls: Any) -> UnitsVector:
         return UnitsVector(4, -3, -1, 2, 0, 0, 0)
 
-    @classmethod
     @property
-    def power(cls: type[Self]) -> UnitsVector:
+    def power(cls: Any) -> UnitsVector:
         return UnitsVector(-3, 2, 1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def pressure(cls: type[Self]) -> UnitsVector:
+    def pressure(cls: Any) -> UnitsVector:
         return UnitsVector(-2, -1, 1, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def resistance(cls: type[Self]) -> UnitsVector:
+    def resistance(cls: Any) -> UnitsVector:
         return UnitsVector(-3, 2, 1, -2, 0, 0, 0)
 
-    @classmethod
     @property
-    def resistivity(cls: type[Self]) -> UnitsVector:
+    def resistivity(cls: Any) -> UnitsVector:
         return UnitsVector(-3, 3, 1, -2, 0, 0, 0)
 
-    @classmethod
     @property
-    def specific_heat_capacity(cls: type[Self]) -> UnitsVector:
+    def specific_heat_capacity(cls: Any) -> UnitsVector:
         return UnitsVector(-2, 2, 0, 0, -1, 0, 0)
 
-    @classmethod
     @property
-    def temperature(cls: type[Self]) -> UnitsVector:
+    def temperature(cls: Any) -> UnitsVector:
         return UnitsVector(0, 0, 0, 0, 1, 0, 0)
 
-    @classmethod
     @property
-    def thermal_conductivity(cls: type[Self]) -> UnitsVector:
+    def thermal_conductivity(cls: Any) -> UnitsVector:
         return UnitsVector(-3, 1, 1, 0, -1, 0, 0)
 
-    @classmethod
     @property
-    def time(cls: type[Self]) -> UnitsVector:
+    def time(cls: Any) -> UnitsVector:
         return UnitsVector(1, 0, 0, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def velocity(cls: type[Self]) -> UnitsVector:
+    def velocity(cls: Any) -> UnitsVector:
         return UnitsVector(-1, 1, 0, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def voltage(cls: type[Self]) -> UnitsVector:
+    def voltage(cls: Any) -> UnitsVector:
         return UnitsVector(-3, 2, 1, -1, 0, 0, 0)
 
-    @classmethod
     @property
-    def volume(cls: type[Self]) -> UnitsVector:
+    def volume(cls: Any) -> UnitsVector:
         return UnitsVector(0, 3, 0, 0, 0, 0, 0)
 
-    @classmethod
     @property
-    def catalytic_activity(cls: type[Self]) -> UnitsVector:
+    def catalytic_activity(cls: Any) -> UnitsVector:
         return UnitsVector(-1, 0, 0, 0, 0, 0, 1)
 
 
-class SupportsBasicArithmetic(Protocol):
-    
-    def __add__(self: Self, other: Self) -> Self:
-        ...
-    
-    def __sub__(self: Self, other: Self) -> Self:
-        ...
-    
-    def __mul__(self: Self, other: Self) -> Self:
-        ...
-    
-    def __truediv__(self: Self, other: Self) -> Self:
-        ...
+class Units(metaclass=UnitsMeta): ...
 
-    def __eq__(self: Self, other: Self) -> bool:
-        ...
+
+class SupportsBasicArithmetic(Protocol):
+    def __add__(self: Self, other: Self) -> Self: ...
+
+    def __sub__(self: Self, other: Self) -> Self: ...
+
+    def __mul__(self: Self, other: Self) -> Self: ...
+
+    def __truediv__(self: Self, other: Self) -> Self: ...
+
+    def __eq__(self: object, other: object) -> bool: ...
+
 
 V = TypeVar("V", bound=SupportsBasicArithmetic)
-U = TypeVar("U", bound=tuple[int | float | Fraction, ...])
+U = TypeVar("U", bound="tuple[int | float | Fraction, ...]")
 
 
 class UnitMismatch(Exception):
@@ -272,7 +232,6 @@ class UnitMismatch(Exception):
 
 
 class UnitAwareValue(Generic[V, U]):
-
     __slots__ = ("value", "units")
 
     def __init__(self: Self, value: V, units: U) -> None:
@@ -295,19 +254,19 @@ class UnitAwareValue(Generic[V, U]):
                 return type(self)(self.value - other.value, self.units)
             raise UnitMismatch
         return NotImplemented
-    
+
     def __mul__(self: Self, other: object) -> Self:
         if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
             new_units = type(self.units)(*map(operator.add, self.units, other.units))
             return type(self)(self.value * other.value, new_units)
         return NotImplemented
-    
+
     def __truediv__(self: Self, other: object) -> Self:
         if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
             new_units = type(self.units)(*map(operator.sub, self.units, other.units))
             return type(self)(self.value / other.value, new_units)
         return NotImplemented
-    
+
     def __eq__(self: Self, other: object) -> bool:
         if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
             return self.value == other.value and self.units == other.units
@@ -339,13 +298,13 @@ SI_NAMED_DERIVED_UNIT_LOOKUP_DICT: dict[UnitsVector, str] = {
     Units.magnetic_flux_density: "T",
     Units.inductance: "H",
     Units.illuminance: "lx",
-    Units.catalytic_activity: "Kat",    
+    Units.catalytic_activity: "Kat",
 }
 
 SUPERSCRIPTS: dict[int, str] = {
-    1: "\u00B9",
-    2: "\u00B2",
-    3: "\u00B3",
+    1: "\u00b9",
+    2: "\u00b2",
+    3: "\u00b3",
     4: "\u2074",
     5: "\u2075",
     6: "\u2076",
@@ -369,12 +328,18 @@ def format_unitsvector_as_si(vec: UnitsVector) -> str:
     per_that: list[str] = []
 
     for name in (
-        "length", "mass", "time", "current", "temperature", "amount_of_substance", "luminous_intensity",
+        "length",
+        "mass",
+        "time",
+        "current",
+        "temperature",
+        "amount_of_substance",
+        "luminous_intensity",
     ):
         val: int = getattr(vec, name, 0)
         if not val:
             continue
-        
+
         arr = this
         if val < 0:
             arr = per_that
@@ -392,7 +357,6 @@ def format_unitsvector_as_si(vec: UnitsVector) -> str:
 
 
 class SIUnitAwareValue(UnitAwareValue[V, U]):
-
     def __init__(self: Self, value: V, units: U) -> None:
         if not isinstance(units, UnitsVector):
             msg = "Use a UnitsVector for this one for now"
