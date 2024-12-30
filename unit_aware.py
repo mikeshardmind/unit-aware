@@ -16,9 +16,9 @@ from __future__ import annotations
 
 import operator
 from fractions import Fraction
-from typing import Any, Generic, NamedTuple, Protocol, Self, TypeVar
+from typing import Any, NamedTuple, Protocol, Self
 
-__all__ = ["Units", "SIUnitAwareValue", "UnitAwareValue", "UnitsVector"]
+__all__ = ["SIUnitAwareValue", "UnitAwareValue", "Units", "UnitsVector"]
 
 """
 s	second	time
@@ -30,15 +30,18 @@ mol	mole	amount of substance
 cd	candela	luminous intensity
 """
 
+type _VTs = int | float | Fraction
+type UnitsLike = tuple[_VTs, _VTs, _VTs, _VTs, _VTs, _VTs, _VTs]
+
 
 class UnitsVector(NamedTuple):
-    time: int | Fraction = 0
-    length: int | Fraction = 0
-    mass: int | Fraction = 0
-    current: int | Fraction = 0
-    temperature: int | Fraction = 0
-    luminous_intensity: int | Fraction = 0
-    amount_of_substance: int | Fraction = 0
+    time: _VTs = 0
+    length: _VTs = 0
+    mass: _VTs = 0
+    current: _VTs = 0
+    temperature: _VTs = 0
+    luminous_intensity: _VTs = 0
+    amount_of_substance: _VTs = 0
 
 
 class UnitsMeta(type):
@@ -210,7 +213,7 @@ class UnitsMeta(type):
 class Units(metaclass=UnitsMeta): ...
 
 
-class SupportsBasicArithmetic(Protocol):
+class SupportsOps(Protocol):
     def __add__(self: Self, other: Self) -> Self: ...
 
     def __sub__(self: Self, other: Self) -> Self: ...
@@ -221,9 +224,7 @@ class SupportsBasicArithmetic(Protocol):
 
     def __eq__(self: object, other: object) -> bool: ...
 
-
-V = TypeVar("V", bound=SupportsBasicArithmetic)
-U = TypeVar("U", bound="tuple[int | float | Fraction, ...]")
+    def __hash__(self) -> int: ...
 
 
 class UnitMismatch(Exception):
@@ -231,12 +232,21 @@ class UnitMismatch(Exception):
         super().__init__("Can't add/subtract values with different units")
 
 
-class UnitAwareValue(Generic[V, U]):
-    __slots__ = ("value", "units")
+class UnitAwareValue[V: SupportsOps, U: UnitsLike]:
+    __slots__ = ("_units", "_value")
 
-    def __init__(self: Self, value: V, units: U) -> None:
-        self.value: V = value
-        self.units: U = units
+    def __new__(cls, value: V, units: U, /) -> Self:
+        obj = super().__new__(cls)
+        obj._value, obj._units = value, units
+        return obj
+
+    @property
+    def value(self) -> V:
+        return self._value
+
+    @property
+    def units(self) -> U:
+        return self._units
 
     def __repr__(self: Self) -> str:
         return f"UnitAwareValue(value={self.value!r}, units={self.units!r})"
@@ -271,6 +281,9 @@ class UnitAwareValue(Generic[V, U]):
         if isinstance(other, type(self)) and isinstance(other.units, type(self.units)):
             return self.value == other.value and self.units == other.units
         return False
+
+    def __hash__(self) -> int:
+        return hash(("!%^", type(self), self.value, self.units))
 
 
 SI_BASE_UNIT_LOOKUP_DICT: dict[UnitsVector, str] = {
@@ -315,7 +328,9 @@ SUPERSCRIPTS: dict[int, str] = {
 }
 
 
-def format_unitsvector_as_si(vec: UnitsVector) -> str:
+def format_unitsvector_as_si(vec: UnitsLike, /) -> str:
+    if not isinstance(vec, UnitsVector):
+        vec = UnitsVector(*vec)
     try:
         return SI_BASE_UNIT_LOOKUP_DICT[vec]
     except KeyError:
@@ -356,15 +371,8 @@ def format_unitsvector_as_si(vec: UnitsVector) -> str:
     return "/".join(filter(None, ("".join(this), "".join(per_that))))
 
 
-class SIUnitAwareValue(UnitAwareValue[V, U]):
-    def __init__(self: Self, value: V, units: U) -> None:
-        if not isinstance(units, UnitsVector):
-            msg = "Use a UnitsVector for this one for now"
-            raise TypeError(msg)
-        super().__init__(value, units)
-
+class SIUnitAwareValue[V: SupportsOps, U: UnitsLike](UnitAwareValue[V, U]):
     def __repr__(self: Self) -> str:
-        assert isinstance(self.units, UnitsVector)
         si_repr = format_unitsvector_as_si(self.units)
         # done this way in case of dimensionless values
         return " ".join(filter(None, (f"{self.value}", si_repr)))

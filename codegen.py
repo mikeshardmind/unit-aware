@@ -79,12 +79,10 @@ unit_regex = re.compile(r"([^0-9\-]+)((\-?[0-9]\W*){7})")
 if __name__ == "__main__":
     # run this, copy into unit_aware.py on adding derived units to the above
     # won't change basically ever, but I wasn't manually writing that all.
-    with Path("generated.gen").open(mode="w") as fp:
+    with Path("generated.gen").open(mode="w", encoding="utf-8") as fp:
         fp.write(class_template)
         for unitstring in UNIT_INFO.splitlines():
             if m := unit_regex.match(unitstring):
                 name = m.group(1).strip().casefold().replace(" ", "_")
                 cs_units = ", ".join(m.group(2).split())
                 fp.write(prop_template.format(name=name, cs_units=cs_units))
-
-            

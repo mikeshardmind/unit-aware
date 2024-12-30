@@ -26,16 +26,16 @@ UnitAwareValue prevents addition and subtraction with mismatched units, the belo
 >>> UnitAwareValue(120, Units.area) + UnitAwareValue(120, Units.volume)
 ```
 
-### Already using SI units like you should be?
+### Already using SI units?
 
 `SIUnitAwareValue` has a repr which displays the SI units, including basic support for derived units.
 ```py
 from unit_aware import Units, SIUnitAwareValue as SIV
->>> SIV(1, Units.scalar_value) / SIV(1, Units.time) 
+>>> SIV(1, Units.scalar_value) / SIV(1, Units.time)
 1.0 Hz
->>> SIV(1, Units.velocity) * SIV(1, Units.time) 
+>>> SIV(1, Units.velocity) * SIV(1, Units.time)
 1 m
->>> SIV(1, Units.velocity) + SIV(1, Units.acceleration) * SIV(1, Units.time) 
+>>> SIV(1, Units.velocity) + SIV(1, Units.acceleration) * SIV(1, Units.time)
 2 m/s
 >>> SIV(1, Units.power) / SIV(1, Units.current)
 1.0 V
@@ -43,11 +43,11 @@ from unit_aware import Units, SIUnitAwareValue as SIV
 
 If it can't determine an equivalent derived unit appears to make sense:
 ```py
->>> SIV(1, Units.power) / SIV(1, Units.time) * SIV(1, Units.area) / SIV(1, Units.time)  
+>>> SIV(1, Units.power) / SIV(1, Units.time) * SIV(1, Units.area) / SIV(1, Units.time)
 1.0 m⁴kg/s⁵
 ```
 
-Not all SI recognized derived units are supported for automatic display. 
+Not all SI recognized derived units are supported for automatic display.
 - Radians, and steradians are dimensionless. You can insert them as appropriate without other modification to what is displayed.
 - Celcius is not supported by this at this time. This may not change (needs consideration of impact)
 - gray and sievert are excluded, having the same dimensionality with slightly differing semantic meaning.
@@ -63,7 +63,7 @@ You can use the builtin `fractions.Fraction` or `decimal.Decimal` if specific pr
 ```py
 >>> from fractions import Fraction
 >>> from unit_aware import Units, SIUnitAwareValue as SIV
->>> SIV(Fraction("5/4"), Units.length) / SIV(Fraction("3"), Units.time)   
+>>> SIV(Fraction("5/4"), Units.length) / SIV(Fraction("3"), Units.time)
 5/12 m/s
 ```
 
@@ -93,7 +93,7 @@ but units vectors don't care about the units, only the coherence of the units, s
 True
 ```
 
-This doesn't mean the *values* are equivalent to those of the SI, you still need to scale based on the base units 
+This doesn't mean the *values* are equivalent to those of the SI, you still need to scale based on the base units
 in this case, scaling by a factor of 220 * (2**(1/4)), as charge is the same in both systems,
 and the seven cs uses middle C (c4), assuming A4 is 440hz and 12-tone equal temperament
 
