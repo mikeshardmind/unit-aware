@@ -51,7 +51,7 @@ Not all SI recognized derived units are supported for automatic display.
 - Radians, and steradians are dimensionless. You can insert them as appropriate without other modification to what is displayed.
 - Celcius is not supported by this at this time. This may not change (needs consideration of impact)
 - gray and sievert are excluded, having the same dimensionality with slightly differing semantic meaning.
-    - May add as sievert, with the expectation that those who need gray know the dimensional equivalence
+    - May add as gray, with the expectation that those who need sievert know the dimensional equivalence
 - becquerel is excluded for dimensional equivalence to hertz, with hertz being significantly more common
 
 ### Arbitrary Precision
