@@ -63,13 +63,12 @@ Catalytic activity      -1   0   0   0   0   0   1
 
 
 class_template = """
-class Units:
+class UnitsMeta(type):
 """
 
 prop_template = """
-    @classmethod
     @property
-    def {name}(cls: type[Self]) -> UnitsVector:
+    def {name}(cls: Any) -> UnitsVector:
         return UnitsVector({cs_units})
 """
 
